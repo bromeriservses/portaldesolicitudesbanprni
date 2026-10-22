@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gran Sorteo Banpro 2026</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:100%;height:100%;overflow:hidden;}
+  body{
+    font-family:'Segoe UI',system-ui,sans-serif;
+    background: linear-gradient(135deg,#051a09 0%,#083018 50%,#062212 100%);
+    position:relative;
+    color:#fff;
+  }
+
+  /* ── decorative background ── */
+  .bg-glow{
+    position:absolute;width:60%;height:160%;left:-15%;top:-30%;
+    background:radial-gradient(ellipse at center,rgba(141,198,63,0.18) 0%,transparent 60%);
+    transform:rotate(-12deg);pointer-events:none;
+  }
+  .road-line{
+    position:absolute;bottom:6%;left:0;right:0;height:2px;
+    background:repeating-linear-gradient(90deg,
+      rgba(255,255,255,0.18) 0px, rgba(255,255,255,0.18) 32px,
+      transparent 32px, transparent 64px);
+    animation:roadMove 0.7s linear infinite;
+  }
+  @keyframes roadMove{to{background-position:64px 0;}}
+
+  /* ── layout ── */
+  .scene{
+    position:relative;z-index:2;
+    width:100%;height:100%;
+    display:grid;
+    grid-template-columns:1.1fr 1fr;
+    align-items:center;
+    gap:20px;
+    padding:18px 5%;
+  }
+
+  /* LEFT TEXT */
+  .left{display:flex;flex-direction:column;justify-content:center;gap:8px;}
+  .tag{
+    display:inline-block;align-self:flex-start;
+    background:rgba(141,198,63,0.15);
+    border:1px solid rgba(141,198,63,0.45);
+    color:#8dc63f;
+    font-size:10px;font-weight:700;letter-spacing:2.5px;
+    text-transform:uppercase;padding:5px 14px;border-radius:999px;
+  }
+  .head{
+    font-size:clamp(22px,4.2vw,40px);
+    font-weight:900;line-height:1;
+    letter-spacing:-1px;color:#fff;
+  }
+  .head em{
+    font-style:normal;
+    background:linear-gradient(135deg,#8dc63f 0%,#1aff64 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    background-clip:text;
+  }
+  .sub{
+    font-size:clamp(11px,1.5vw,13px);
+    color:rgba(255,255,255,0.65);line-height:1.5;
+    max-width:90%;
+  }
+  .stats{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
+  .stat{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.13);
+    border-radius:8px;padding:6px 12px;
+  }
+  .stat b{
+    display:block;font-size:clamp(14px,2vw,18px);
+    font-weight:900;color:#8dc63f;line-height:1;
+  }
+  .stat span{
+    font-size:8.5px;color:rgba(255,255,255,0.5);
+    letter-spacing:1.2px;text-transform:uppercase;
+  }
+
+  /* speedometer mini */
+  .speedo{
+    position:absolute;top:14px;right:14px;
+    width:clamp(58px,9vw,80px);height:clamp(58px,9vw,80px);
+    z-index:3;
+  }
+  #needle{transform-box:fill-box;transform-origin:50% 90%;
+    animation:sweep 3s ease-in-out infinite;}
+  @keyframes sweep{
+    0%{transform:rotate(-110deg);}
+    65%{transform:rotate(55deg);}
+    80%{transform:rotate(40deg);}
+    100%{transform:rotate(-110deg);}
+  }
+
+  /* RIGHT VEHICLES */
+  .right{
+    position:relative;height:100%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .vehicle{
+    position:absolute;
+    border-radius:14px;overflow:hidden;
+    box-shadow:0 18px 40px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
+  }
+  .vehicle img{
+    width:100%;height:100%;display:block;
+    object-fit:cover;
+    transition:transform 6s ease-in-out;
+  }
+  .vehicle .vtag{
+    position:absolute;left:8px;bottom:8px;
+    background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,0.18);
+    color:#fff;font-size:9px;font-weight:700;
+    letter-spacing:1.5px;text-transform:uppercase;
+    padding:4px 10px;border-radius:6px;
+  }
+  /* truck - big behind */
+  .truck{
+    width:75%;height:62%;
+    right:5%;top:8%;
+    transform:rotate(-3deg);
+    animation:floatA 4s ease-in-out infinite;
+  }
+  .truck .vtag{background:rgba(15,138,60,0.85);border-color:rgba(141,198,63,0.4);}
+  /* moto - front overlapping */
+  .moto{
+    width:55%;height:48%;
+    left:0;bottom:6%;
+    transform:rotate(4deg);
+    animation:floatB 3.6s ease-in-out infinite;
+    z-index:2;
+  }
+  .moto .vtag{background:rgba(200,40,40,0.85);border-color:rgba(255,100,100,0.4);}
+
+  @keyframes floatA{0%,100%{transform:rotate(-3deg) translateY(0);}50%{transform:rotate(-3deg) translateY(-6px);}}
+  @keyframes floatB{0%,100%{transform:rotate(4deg) translateY(0);}50%{transform:rotate(4deg) translateY(-5px);}}
+
+  /* responsive */
+  @media (max-width:560px){
+    .scene{grid-template-columns:1fr;gap:8px;padding:14px 18px;}
+    .right{height:55%;}
+    .speedo{top:8px;right:8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<!-- mini speedometer top-right -->
+<svg class="speedo" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="46" fill="rgba(0,0,0,0.45)" stroke="rgba(141,198,63,0.4)" stroke-width="2"/>
+  <path d="M14 50 A36 36 0 0 1 86 50" stroke="rgba(141,198,63,0.25)" stroke-width="5" stroke-linecap="round" fill="none"/>
+  <g stroke="rgba(255,255,255,0.4)" stroke-width="1.5">
+    <line x1="50" y1="8" x2="50" y2="14" transform="rotate(-110,50,50)"/>
+    <line x1="50" y1="8" x2="50" y2="14" transform="rotate(-55,50,50)"/>
+    <line x1="50" y1="8" x2="50" y2="14" transform="rotate(0,50,50)"/>
+    <line x1="50" y1="8" x2="50" y2="14" transform="rotate(55,50,50)"/>
+    <line x1="50" y1="8" x2="50" y2="14" transform="rotate(110,50,50)"/>
+  </g>
+  <circle cx="50" cy="50" r="28" fill="rgba(0,0,0,0.5)"/>
+  <g id="needle">
+    <rect x="48.5" y="20" width="3" height="28" rx="1.5" fill="#8dc63f"/>
+    <circle cx="50" cy="48" r="4" fill="#1a3a1e" stroke="#8dc63f" stroke-width="1.5"/>
+  </g>
+  <text x="50" y="62" font-size="6.5" fill="rgba(255,255,255,0.55)" text-anchor="middle" font-weight="700">km/h</text>
+</svg>
+
+<div class="scene">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="tag">Gran Sorteo 2026</div>
+    <div class="head">Acelera<br>y <em>Gana</em></div>
+    <div class="sub">Camionetas, motos y hasta C$ 500,000 en efectivo te están esperando.</div>
+    <div class="stats">
+      <div class="stat"><b>5</b><span>Camionetas</span></div>
+      <div class="stat"><b>10</b><span>Motos</span></div>
+      <div class="stat"><b>C$500K</b><span>Efectivo</span></div>
+    </div>
+  </div>
+
+  <!-- RIGHT vehicles -->
+  <div class="right">
+
+    <!-- Pickup truck photo -->
+    <div class="vehicle truck">
+      <img src="https://images.unsplash.com/photo-1605893477799-b99e3b8b41fe?w=900&q=80&auto=format&fit=crop"
+           alt="Camioneta 4x4"
+           onerror="this.src='https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=900&q=80'"/>
+      <div class="vtag">Camioneta 4×4</div>
+    </div>
+
+    <!-- Motorcycle photo -->
+    <div class="vehicle moto">
+      <img src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=700&q=80&auto=format&fit=crop"
+           alt="Moto Sport"
+           onerror="this.src='https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=700&q=80'"/>
+      <div class="vtag">Moto Sport</div>
+    </div>
+
+  </div>
+</div>
+
+<div class="road-line"></div>
+
+</body>
+</html>
